@@ -14,7 +14,6 @@ admin.initializeApp({
 
 app.put("/update-user", async (req, res) => {
     const { uid, email, displayName, cleanedPhoneNumber } = req.body;
-    console.log(req.body);
     let newPhoneNumber;
     if (cleanedPhoneNumber === '') {
         newPhoneNumber = '+330000000000';
@@ -25,17 +24,11 @@ app.put("/update-user", async (req, res) => {
         return res.status(400).json({ error: "L'UID est requis pour mettre à jour l'utilisateur." });
     }
     try {
-        console.log("Mise à jour de l'utilisateur...");
-        console.log(newPhoneNumber);
-
-
         await admin.auth().updateUser(uid, {
             email: email,
             displayName: displayName,
             phoneNumber: newPhoneNumber,
         });
-        console.log("User updated");
-
         res.status(200).json({ message: "Utilisateur mis à jour avec succès." });
     } catch (error) {
         console.error("Erreur lors de la mise à jour de l'utilisateur :", error);

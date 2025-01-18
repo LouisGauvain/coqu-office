@@ -15,12 +15,7 @@ const Login = () => {
         e.preventDefault();
         try {
             await loginWithEmail(email, password);
-            console.log("Connexion réussie");
-
-            setError("");
         } catch (err) {
-            console.log("Connexion échouée");
-
             setError(err.message);
         }
     };

@@ -5,7 +5,6 @@ import { auth } from "./firebase";
 export const registerWithEmail = async (email, password) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        console.log("Utilisateur inscrit :", userCredential.user);
         return userCredential.user;
     } catch (error) {
         throw new Error(error.message);
@@ -16,7 +15,6 @@ export const registerWithEmail = async (email, password) => {
 export const loginWithEmail = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log("Utilisateur connecté :", userCredential.user);
         return userCredential.user;
     } catch (error) {
         throw new Error(error.message);
@@ -27,7 +25,6 @@ export const loginWithEmail = async (email, password) => {
 export const logout = async () => {
     try {
         await signOut(auth);
-        console.log("Déconnexion réussie");
     } catch (error) {
         throw new Error(error.message);
     }

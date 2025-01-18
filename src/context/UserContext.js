@@ -18,13 +18,8 @@ function UserProvider({ children }) {
     const [userDetails, setUserDetails] = useState(null);
 
     const updateUserProfile = async (uid, { displayName, phoneNumber, email }) => {
-        console.log("Début de la mise à jour du profil...");
-        console.log("Données utilisateur :", { uid, displayName, phoneNumber, email });
-
         try {
             const cleanedPhoneNumber = phoneNumber.startsWith("+33") ? "0" + phoneNumber.slice(3) : phoneNumber;
-            console.log("Numéro de téléphone nettoyé :", cleanedPhoneNumber);
-
             const updateResponse = await axios.put(appBackendUrl + '/update-user', {
                 uid,
                 email,
@@ -33,7 +28,6 @@ function UserProvider({ children }) {
             });
 
             if (updateResponse.status === 200) {
-                console.log("Mise à jour réussie.");
                 setUserDetails((prev) => ({
                     ...prev,
                     displayName,

@@ -3,8 +3,6 @@ import { UserContext } from "../context/UserContext";
 
 const Profil = () => {
     const { user, updateUserProfile } = useContext(UserContext);
-    console.log("user", user);
-
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [userElem, setUserElem] = useState({
@@ -46,8 +44,6 @@ const Profil = () => {
         if (formatted === '00 00 00 00 00') {
             formatted = '';
         }
-        console.log("formatted", formatted);
-
         return formatted.trim();
     };
 

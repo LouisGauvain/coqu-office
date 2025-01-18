@@ -1,44 +1,54 @@
 import React, { useContext, useState } from "react";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../config/firebase";
 import { UserContext } from "../context/UserContext";
 
-async function updateUserProfile(uid, updatedData) {
-    try {
-        const userRef = doc(db, "users", uid);
-        await updateDoc(userRef, updatedData);
-    } catch (error) {
-        console.error("Erreur lors de la mise à jour :", error.message, error.code);
-    }
-}
-
 const Profil = () => {
-    const { email, displayName, phoneNumber, uid } = useContext(UserContext);
+    const { user, updateUserProfile } = useContext(UserContext);
+    console.log("user", user);
 
-    // updateUserProfile(uid, { displayName: "Test" });
-
-    const [formData, setFormData] = useState({
-        email: email || "",
-        displayName: displayName || "",
-        phoneNumber: phoneNumber || "",
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [userElem, setUserElem] = useState({
+        uid: user?.uid || '',
+        displayName: user?.displayName || '',
+        phoneNumber: user?.phoneNumber || '',
+        email: user?.email || '',
     });
 
     const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [id]: value,
+        const { name, value } = e.target;
+        setUserElem((prevState) => ({
+            ...prevState,
+            [name]: value,
         }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleConfirme = async (event) => {
+        event.preventDefault();
+        setError('');
+        setSuccess('');
         try {
-            await updateUserProfile(uid, formData);
+            await updateUserProfile(user.uid, {
+                displayName: userElem.displayName,
+                phoneNumber: userElem.phoneNumber,
+                email: userElem.email,
+            });
+            setSuccess("Profil mis à jour avec succès.");
         } catch (error) {
-            console.error("Erreur lors de la mise à jour du profil :", error);
-            console.error("Erreur Firestore :", error.message, error.code);
+            console.error("Erreur lors de la mise à jour :", error.response?.data?.error || error);
+            setError("Erreur lors de la mise à jour du profil.");
         }
+    };
+
+    const formatPhoneNumber = (phoneNumber) => {
+        if (!phoneNumber) return '';
+        let formatted = phoneNumber.replace(/^\+33/, '0');
+        formatted = formatted.replace(/(\d{2})(?=\d)/g, '$1 ');
+        if (formatted === '00 00 00 00 00') {
+            formatted = '';
+        }
+        console.log("formatted", formatted);
+
+        return formatted.trim();
     };
 
     return (
@@ -47,42 +57,44 @@ const Profil = () => {
                 <div className="row">
                     <div className="col-md-6">
                         <h1>Profil</h1>
-                        <form className="form-login" onSubmit={handleSubmit}>
+                        {error && <div className="alert alert-danger">{error}</div>}
+                        {success && <div className="alert alert-success">{success}</div>}
+                        <form className="form-login" onSubmit={handleConfirme}>
                             <div className="form-floating mb-3">
                                 <input
                                     id="email"
+                                    name="email"
                                     type="email"
                                     placeholder="Email"
                                     className="form-control"
                                     autoComplete="email"
-                                    value={formData.email}
+                                    value={userElem.email || ''}
                                     onChange={handleChange}
                                 />
                                 <label htmlFor="email" className="form-label">Email address</label>
                             </div>
                             <div className="form-floating mb-3">
                                 <input
-                                    id="displayName"
+                                    name="displayName"
                                     type="text"
                                     placeholder="Username"
                                     className="form-control"
                                     autoComplete="name"
-                                    value={formData.displayName}
+                                    value={userElem.displayName || ''}
                                     onChange={handleChange}
                                 />
-                                <label htmlFor="displayName" className="form-label">Username</label>
+                                <label className="form-label">Username</label>
                             </div>
                             <div className="form-floating mb-3">
                                 <input
-                                    id="phoneNumber"
-                                    type="number"
+                                    name="phoneNumber"
+                                    type="text"
                                     placeholder="Numéro de téléphone"
                                     className="form-control"
-                                    autoComplete="number"
-                                    value={formData.phoneNumber}
+                                    value={formatPhoneNumber(userElem.phoneNumber || '')}
                                     onChange={handleChange}
                                 />
-                                <label htmlFor="phoneNumber" className="form-label">Numéro de téléphone </label>
+                                <label className="form-label">Numéro de téléphone </label>
                             </div>
                             <button type="submit" className="btn btn-primary">
                                 Modifier le profil

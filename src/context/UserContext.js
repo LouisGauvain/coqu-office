@@ -1,19 +1,54 @@
-import React, { useEffect, createContext } from "react";
-
+import React, { useEffect, createContext, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebase";
+import axios from 'axios';
+const appBackendUrl = process.env.REACT_APP_API_BACKEND_URL;
 
 const UserContext = createContext(null);
 
 function UserProvider({ children }) {
-    const [user, setUser] = React.useState(null);
-    const [accessToken, setAccessToken] = React.useState(null);
-    const [refreshToken, setRefreshToken] = React.useState(null);
-    const [email, setEmail] = React.useState(null);
-    const [displayName, setDisplayName] = React.useState(null);
-    const [photoURL, setPhotoURL] = React.useState(null);
-    const [phoneNumber, setPhoneNumber] = React.useState(null);
-    const [uid, setUid] = React.useState(null);
+    const [user, setUser] = useState(null);
+    const [accessToken, setAccessToken] = useState(null);
+    const [refreshToken, setRefreshToken] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [displayName, setDisplayName] = useState(null);
+    const [photoURL, setPhotoURL] = useState(null);
+    const [phoneNumber, setPhoneNumber] = useState(null);
+    const [uid, setUid] = useState(null);
+    const [userDetails, setUserDetails] = useState(null);
+
+    const updateUserProfile = async (uid, { displayName, phoneNumber, email }) => {
+        console.log("Début de la mise à jour du profil...");
+        console.log("Données utilisateur :", { uid, displayName, phoneNumber, email });
+
+        try {
+            const cleanedPhoneNumber = phoneNumber.startsWith("+33") ? "0" + phoneNumber.slice(3) : phoneNumber;
+            console.log("Numéro de téléphone nettoyé :", cleanedPhoneNumber);
+
+            const updateResponse = await axios.put(appBackendUrl + '/update-user', {
+                uid,
+                email,
+                displayName,
+                cleanedPhoneNumber,
+            });
+
+            if (updateResponse.status === 200) {
+                console.log("Mise à jour réussie.");
+                setUserDetails((prev) => ({
+                    ...prev,
+                    displayName,
+                    email,
+                    phoneNumber: cleanedPhoneNumber || phoneNumber || '',
+                }));
+
+            } else {
+                throw new Error("Erreur lors de la mise à jour du profil.");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour du profil :", error);
+            throw error;
+        }
+    };
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -33,7 +68,7 @@ function UserProvider({ children }) {
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, setUser, accessToken, refreshToken, email, displayName, photoURL, phoneNumber, uid }}>
+        <UserContext.Provider value={{ user, setUser, accessToken, refreshToken, email, displayName, photoURL, phoneNumber, uid, updateUserProfile, userDetails }}>
             {children}
         </UserContext.Provider>
     );

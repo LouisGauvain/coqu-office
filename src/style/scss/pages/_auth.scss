@@ -1,0 +1,13 @@
+.row-auth {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.title-auth {
+  font-weight: 700;
+  text-align: center;
+  margin: 30px 0;
+}

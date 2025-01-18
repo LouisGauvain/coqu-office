@@ -1,0 +1,46 @@
+.container-reservation {
+  margin: 20px 20px 20px 250px;
+  margin-left: 250px;
+}
+
+.div_reservation {
+  width: 100vw;
+  max-width: 1000px;
+  height: 100vh;
+  max-height: 500px;
+  background-color: $white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  border-radius: 10px;
+  gap: 20px;
+  .table_reservation {
+    max-width: 960px;
+    width: 100vw;
+    thead {
+      height: 45px;
+      background-color: $background-thead;
+      border-radius: 12px;
+      th {
+        padding: 10px;
+        width: calc(960px / 7);
+        font-weight: 500;
+      }
+    }
+    tbody {
+      tr {
+        height: 45px;
+        border-bottom: 1px solid $line;
+        td {
+          padding: 10px;
+          width: calc(960px / 7);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+}

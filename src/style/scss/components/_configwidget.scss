@@ -1,0 +1,22 @@
+.container-configWidget {
+  overflow: scroll;
+  height: calc(100vh - 65px);
+  margin-left: 200px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: stretch;
+  gap: 20px;
+}
+
+.div_configWidget {
+  background-color: $white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  border-radius: 10px;
+  gap: 20px;
+}

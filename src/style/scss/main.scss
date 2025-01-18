@@ -1,1 +1,17 @@
 @import "../../../node_modules/bootstrap/scss/bootstrap";
+
+@import "./utils/variables.scss";
+@import "./utils/fonts.scss";
+
+@import "./base/body.scss";
+
+@import "./pages/auth.scss";
+
+@import "./components/sidebar.scss";
+@import "./components/header.scss";
+@import "./components/login.scss";
+@import "./components/register.scss";
+@import "./components/profil.scss";
+@import "./components/reservation.scss";
+@import "./components/configwidget.scss";
+@import "./components/widget.scss";
